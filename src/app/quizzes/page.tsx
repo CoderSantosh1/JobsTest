@@ -102,7 +102,6 @@ export default function QuizList() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([])
   const [loading, setLoading] = useState(true)
   const [loggedInUser, setLoggedInUser] = useState<{ _id: string; name: string; mobile: string } | null>(null)
-  const [showAuth, setShowAuth] = useState(false)
   const [currentLanguage, setCurrentLanguage] = useState<string>("en")
   const [languageLoading, setLanguageLoading] = useState(false)
   const router = useRouter()
@@ -120,8 +119,6 @@ export default function QuizList() {
         } catch (error) {
           console.error("Error parsing user data:", error)
         }
-      } else {
-        setShowAuth(true)
       }
 
       // Get saved language preference
@@ -154,13 +151,11 @@ export default function QuizList() {
   const handleLogout = () => {
     localStorage.removeItem("user")
     setLoggedInUser(null)
-    setShowAuth(true)
     toast.success("Logged out successfully")
   }
 
   const handleAuthSuccess = (user: { _id: string; name: string; mobile: string }) => {
     setLoggedInUser(user)
-    setShowAuth(false)
     toast.success(`${t.welcome}, ${user.name}!`)
   }
 
@@ -206,11 +201,6 @@ export default function QuizList() {
     } finally {
       setLanguageLoading(false)
     }
-  }
-
-  // Show auth modal if user is not logged in
-  if (showAuth) {
-    return <AuthModal onSuccess={handleAuthSuccess} />
   }
 
   if (loading) {
@@ -274,20 +264,20 @@ export default function QuizList() {
                 </div>
               </div>
 
-              {/* Language Loading Indicator */}
-              {languageLoading && (
-                <div className="mt-4 flex items-center justify-center gap-2 text-emerald-300">
-                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-emerald-400"></div>
-                  <span className="text-sm">Changing language...</span>
-                </div>
-              )}
+             
             </CardContent>
           </Card>
         </div>
       )}
 
       <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-8 text-white flex justify-center">{t.availableTests}</h1>
-
+       {/* Language Loading Indicator */}
+       {languageLoading && (
+                <div className="mt-4 flex items-center justify-center gap-2 text-emerald-300">
+                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-emerald-400"></div>
+                  <span className="text-sm">Changing language...</span>
+                </div>
+              )}
       <div className="grid sm:gap-2 md:grid-cols-2 lg:grid-cols-3 justify-items-center">
         {quizzes.map((quiz) => (
           <Card
